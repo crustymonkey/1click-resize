@@ -5,6 +5,7 @@ if (!localStorage.created) {
   var manifest = chrome.runtime.getManifest();
   localStorage.ver = manifest.version;
   localStorage.created = 1;
+  localStorage.setItem('lastSelected', 'none');
 }
  function getCustom(){
   return JSON.parse(localStorage.getItem('customSizes'));
@@ -16,6 +17,11 @@ function addSize(size){
   sizes.push({name:size +' (custom)',size:size});
   localStorage.setItem('customSizes',JSON.stringify(sizes));
 }
+
+function getLastSelected() {
+  return localStorage.getItem('lastSelected');
+}
+
 function removeSize(size){
   console.log(size);
   let sizes = getCustom();
@@ -93,8 +99,13 @@ function getDevices(){
   if(sizesCustom){
     sizes = sizes.concat(sizesCustom);
   }
-  console.log('sizes', sizes)
-  return sizes;
+  var sizeResp = {
+    lastSelected: getLastSelected(),
+    sizes: sizes
+  };
+
+  console.log('sizes resp: ', sizeResp)
+  return sizeResp;
  }
 
 chrome.runtime.onMessage.addListener( function(request,sender,sendResponse)
@@ -115,6 +126,8 @@ chrome.runtime.onMessage.addListener( function(request,sender,sendResponse)
     if( request.action === "resize" )
     {
       
+      localStorage.setItem('lastSelected', request.size);
+      console.log(getLastSelected());
       var newWidth,newHeight;
       if(/\d+\%/.test(request.size)){
         newWidth = request.size.replace('%','');

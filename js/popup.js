@@ -5,10 +5,14 @@ $(function(){
             function (response) {
                 //console.log(response);
                 $('select option.not-default').remove();
-                for(let size of response){
+                for(let size of response.sizes){
                       $('.sizes').append('<option value="' + size.size + '" ' + ( size.name.indexOf('custom') > -1 ? 'class="custom"' : '') + '>' + size.name + '</option>')  
                 }
-                $('select').val(newSize);
+                if (newSize != 'none' || !response.lastSelected) {
+                  $('select').val(newSize);
+                } else {
+                  $('select').val(response.lastSelected);
+                }
 
         });
     }
