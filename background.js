@@ -74,7 +74,7 @@ function getDevices(){
  }
 
  function getSizes(){
-  var sizes = [
+  var sizesPerc = [
     
     {
       name : '66%',
@@ -92,15 +92,24 @@ function getDevices(){
       name : '33%',
       size :'33%'
     }
-  ],
-    sizesDevices = getDevices(),
-    sizesCustom = getCustom();
-  sizes = sizes.concat(sizesDevices);
+  ];
+
+  var sizes = [];
+  var sizesDevices = getDevices();
+  var sizesCustom = getCustom();
   if(sizesCustom){
     sizes = sizes.concat(sizesCustom);
   }
+  sizes = sizes.concat(sizesPerc);
+  sizes = sizes.concat(sizesDevices);
+
+  var lastSel = getLastSelected();
+  if (lastSel == null) {
+    lastSel = sizes[0].name;
+  }
+
   var sizeResp = {
-    lastSelected: getLastSelected(),
+    lastSelected: lastSel,
     sizes: sizes
   };
 
